@@ -2,6 +2,7 @@ import type { Joke } from '@/types/Joke.ts'
 import { useFetch } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { usePagination } from '@/composables/usePagination'
 import { API_URLS } from '@/constants/api'
 
 export const DEFAULT_VALUES = {
@@ -16,8 +17,6 @@ export const DEFAULT_VALUES = {
 export const useJokesStore = defineStore('jokes', () => {
   const jokes = ref<Joke[]>([])
   const isLoading = ref(DEFAULT_VALUES.isLoading)
-  const currentPage = ref(DEFAULT_VALUES.currentPage)
-  const itemsPerPage = ref(DEFAULT_VALUES.itemsPerPage)
   const searchQuery = ref(DEFAULT_VALUES.searchQuery)
   const category = ref(DEFAULT_VALUES.category)
   const likeStatus = ref(DEFAULT_VALUES.likeStatus)
@@ -46,46 +45,31 @@ export const useJokesStore = defineStore('jokes', () => {
     })
   })
 
-  // Calculate total pages based on the number of filtered jokes
-  const totalPages = computed(() => {
-    return Math.max(1, Math.ceil(filteredJokes.value.length / itemsPerPage.value))
-  })
-
-  // Get jokes for the current page
-  const paginatedJokes = computed(() => {
-    const startIndex = (currentPage.value - 1) * itemsPerPage.value
-    const endIndex = startIndex + itemsPerPage.value
-    return filteredJokes.value.slice(startIndex, endIndex)
-  })
-
-  // Handle page change
-  function handlePageChange(page: number) {
-    currentPage.value = page
-  }
-
-  // Calculate the range of jokes being displayed
-  const jokeRange = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage.value + 1
-    const end = Math.min(start + paginatedJokes.value.length - 1, filteredJokes.value.length)
-    return { start, end }
-  })
+  // Use the pagination composable with filtered jokes
+  const pagination = usePagination(
+    () => filteredJokes.value,
+    {
+      defaultCurrentPage: DEFAULT_VALUES.currentPage,
+      defaultItemsPerPage: DEFAULT_VALUES.itemsPerPage,
+    },
+  )
 
   // Set a search query
   function setSearchQuery(query: string) {
     searchQuery.value = query
-    currentPage.value = DEFAULT_VALUES.currentPage // Reset to first page when filter changes
+    pagination.resetPage() // Reset to first page when filter changes
   }
 
   // Set category filter
   function setCategory(value: string) {
     category.value = value
-    currentPage.value = DEFAULT_VALUES.currentPage // Reset to first page when filter changes
+    pagination.resetPage() // Reset to first page when filter changes
   }
 
   // Set like status filter
   function setLikeStatus(value: string) {
     likeStatus.value = value
-    currentPage.value = DEFAULT_VALUES.currentPage // Reset to first page when filter changes
+    pagination.resetPage() // Reset to first page when filter changes
   }
 
   // Like a joke
@@ -166,19 +150,19 @@ export const useJokesStore = defineStore('jokes', () => {
   return {
     jokes,
     filteredJokes,
-    paginatedJokes,
+    paginatedItems: pagination.paginatedItems,
     isLoading,
-    totalPages,
-    jokeRange,
-    currentPage,
-    itemsPerPage,
+    totalPages: pagination.totalPages,
+    itemsRange: pagination.itemsRange,
+    currentPage: pagination.currentPage,
+    itemsPerPage: pagination.itemsPerPage,
     searchQuery,
     category,
     likeStatus,
     DEFAULT_VALUES,
     addJoke,
     deleteAll,
-    handlePageChange,
+    handlePageChange: pagination.handlePageChange,
     getJokes,
     setSearchQuery,
     setCategory,

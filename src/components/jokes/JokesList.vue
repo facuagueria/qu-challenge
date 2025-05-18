@@ -74,7 +74,7 @@ function setIsAddJokeOpen(open: boolean) {
 
   <div class="mt-6 space-y-4">
     <JokeCard
-      v-for="joke in store.paginatedJokes"
+      v-for="joke in store.paginatedItems"
       :key="joke.id"
       :joke
       @like="store.likeJoke"
@@ -82,10 +82,10 @@ function setIsAddJokeOpen(open: boolean) {
     />
   </div>
 
-  <Card v-if="store.paginatedJokes.length > 0" class="mt-6 border-dashed">
+  <Card v-if="store.paginatedItems.length > 0" class="mt-6 border-dashed">
     <CardContent class="flex items-center justify-center">
       <p class="text-sm text-muted-foreground">
-        Showing {{ store.jokeRange.start }} - {{ store.jokeRange.end }} of {{ store.filteredJokes.length }} jokes
+        Showing {{ store.itemsRange.start }} - {{ store.itemsRange.end }} of {{ store.filteredJokes.length }} jokes
       </p>
     </CardContent>
   </Card>
