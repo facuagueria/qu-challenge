@@ -46,6 +46,16 @@ function handleLikeStatusChange(value: string) {
   selectedLikeStatus.value = value
   store.setLikeStatus(value)
 }
+
+function clearFilters() {
+  // Reset the local component state
+  searchQuery.value = store.DEFAULT_VALUES.searchQuery
+  selectedCategory.value = store.DEFAULT_VALUES.category
+  selectedLikeStatus.value = store.DEFAULT_VALUES.likeStatus
+
+  // Call store's clearFilters function
+  store.clearFilters()
+}
 </script>
 
 <template>
@@ -59,6 +69,12 @@ function handleLikeStatusChange(value: string) {
         class="pl-8 bg-white"
       />
     </div>
+
+    <Button variant="outline" class="cursor-pointer" @click="clearFilters">
+      <Icon icon="tabler:search-off" />
+
+      Clear Filters
+    </Button>
 
     <Sheet>
       <SheetTrigger as-child>

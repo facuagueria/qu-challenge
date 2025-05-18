@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { API_URLS } from '@/constants/api'
 
-const DEFAULT_VALUES = {
+export const DEFAULT_VALUES = {
   isLoading: false,
   currentPage: 1,
   itemsPerPage: 5,
@@ -153,6 +153,12 @@ export const useJokesStore = defineStore('jokes', () => {
     isLoading.value = false
   }
 
+  function clearFilters() {
+    setSearchQuery(DEFAULT_VALUES.searchQuery)
+    setCategory(DEFAULT_VALUES.category)
+    setLikeStatus(DEFAULT_VALUES.likeStatus)
+  }
+
   return {
     jokes,
     filteredJokes,
@@ -165,6 +171,7 @@ export const useJokesStore = defineStore('jokes', () => {
     searchQuery,
     category,
     likeStatus,
+    DEFAULT_VALUES,
     deleteAll,
     handlePageChange,
     getJokes,
@@ -174,5 +181,6 @@ export const useJokesStore = defineStore('jokes', () => {
     likeJoke,
     dislikeJoke,
     removeJoke,
+    clearFilters,
   }
 })
