@@ -11,6 +11,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.7
         version: 4.1.7(vite@6.3.5(@types/node@22.15.18)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))
+      '@vee-validate/zod':
+        specifier: ^4.15.0
+        version: 4.15.0(vue@3.5.14(typescript@5.8.3))(zod@3.24.4)
       '@vueuse/core':
         specifier: ^13.2.0
         version: 13.2.0(vue@3.5.14(typescript@5.8.3))
@@ -38,12 +41,18 @@ importers:
       tw-animate-css:
         specifier: ^1.3.0
         version: 1.3.0
+      vee-validate:
+        specifier: ^4.15.0
+        version: 4.15.0(vue@3.5.14(typescript@5.8.3))
       vue:
         specifier: ^3.5.13
         version: 3.5.14(typescript@5.8.3)
       vue-router:
         specifier: ^4.5.0
         version: 4.5.1(vue@3.5.14(typescript@5.8.3))
+      zod:
+        specifier: ^3.24.4
+        version: 3.24.4
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^4.13.1
@@ -1077,6 +1086,11 @@ packages:
     resolution: {integrity: sha512-friS8NEQfHaDbkThxopGk+LuE5v3iY0StruifjQEt7SLbA46OnfgMO15sOTkbpJkol6RB+1l1TYPXh0sCddpvA==}
     cpu: [x64]
     os: [win32]
+
+  '@vee-validate/zod@4.15.0':
+    resolution: {integrity: sha512-MpvIKiyg9X5yD8bJW0no2AU7wtR2T5mrvD9tuPRiie951sU2n6QKgMV38qKKOiqFBCxsMSjIuLLLV3V5kVE4nQ==}
+    peerDependencies:
+      zod: ^3.24.0
 
   '@vitejs/plugin-vue@5.2.4':
     resolution: {integrity: sha512-7Yx/SXSOcQq5HiiV3orevHUFn+pmMB4cgbEkDYgnkUWb0WfeQ/wa2yFv6D5ICiCQOVpjA7vYDXrC7AGO8yjDHA==}
@@ -2861,6 +2875,10 @@ packages:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
     engines: {node: '>=10'}
 
+  type-fest@4.41.0:
+    resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
+    engines: {node: '>=16'}
+
   typescript-eslint@8.32.1:
     resolution: {integrity: sha512-D7el+eaDHAmXvrZBy1zpzSNIRqnCOrkwTgZxTu3MUqRWk8k0q9m9Ho4+vPf7iHtgUfrK/o8IZaEApsxPlHTFCg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -2913,6 +2931,11 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  vee-validate@4.15.0:
+    resolution: {integrity: sha512-PGJh1QCFwCBjbHu5aN6vB8macYVWrajbDvgo1Y/8fz9n/RVIkLmZCJDpUgu7+mUmCOPMxeyq7vXUOhbwAqdXcA==}
+    peerDependencies:
+      vue: ^3.4.26
 
   vite-hot-client@2.0.4:
     resolution: {integrity: sha512-W9LOGAyGMrbGArYJN4LBCdOC5+Zwh7dHvOHC0KmGKkJhsOzaKbpo/jEjpPKVHIW0/jBWj8RZG0NUxfgA8BxgAg==}
@@ -3148,6 +3171,9 @@ packages:
   yoctocolors@2.1.1:
     resolution: {integrity: sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==}
     engines: {node: '>=18'}
+
+  zod@3.24.4:
+    resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -4066,6 +4092,14 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.7.2':
     optional: true
+
+  '@vee-validate/zod@4.15.0(vue@3.5.14(typescript@5.8.3))(zod@3.24.4)':
+    dependencies:
+      type-fest: 4.41.0
+      vee-validate: 4.15.0(vue@3.5.14(typescript@5.8.3))
+      zod: 3.24.4
+    transitivePeerDependencies:
+      - vue
 
   '@vitejs/plugin-vue@5.2.4(vite@6.3.5(@types/node@22.15.18)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))(vue@3.5.14(typescript@5.8.3))':
     dependencies:
@@ -6077,6 +6111,8 @@ snapshots:
 
   type-fest@0.20.2: {}
 
+  type-fest@4.41.0: {}
+
   typescript-eslint@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3):
     dependencies:
       '@typescript-eslint/eslint-plugin': 8.32.1(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3)
@@ -6149,6 +6185,12 @@ snapshots:
       punycode: 2.3.1
 
   util-deprecate@1.0.2: {}
+
+  vee-validate@4.15.0(vue@3.5.14(typescript@5.8.3)):
+    dependencies:
+      '@vue/devtools-api': 7.7.6
+      type-fest: 4.41.0
+      vue: 3.5.14(typescript@5.8.3)
 
   vite-hot-client@2.0.4(vite@6.3.5(@types/node@22.15.18)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0)):
     dependencies:
@@ -6386,5 +6428,7 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yoctocolors@2.1.1: {}
+
+  zod@3.24.4: {}
 
   zwitch@2.0.4: {}
