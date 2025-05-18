@@ -123,6 +123,10 @@ export const useJokesStore = defineStore('jokes', () => {
     }
   }
 
+  function deleteAll() {
+    jokes.value = []
+  }
+
   // Get jokes from API
   async function getJokes() {
     isLoading.value = true
@@ -161,6 +165,7 @@ export const useJokesStore = defineStore('jokes', () => {
     searchQuery,
     category,
     likeStatus,
+    deleteAll,
     handlePageChange,
     getJokes,
     setSearchQuery,

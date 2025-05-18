@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { ref } from 'vue'
 import JokeCard from '@/components/jokes/JokeCard.vue'
+import JokesDeleteAll from '@/components/jokes/JokesDeleteAll.vue'
 import JokesFilter from '@/components/jokes/JokesFilter.vue'
 import JokesPagination from '@/components/jokes/JokesPagination.vue'
 import { Button } from '@/components/ui/button'
@@ -8,6 +10,18 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useJokesStore } from '@/stores/jokes.ts'
 
 const store = useJokesStore()
+
+const isDeleteAllDialogOpen = ref<boolean>(false)
+
+function setIsDeleteAllDialogOpen(open: boolean) {
+  isDeleteAllDialogOpen.value = open
+}
+
+function onDeleteAll() {
+  store.deleteAll()
+
+  setIsDeleteAllDialogOpen(false)
+}
 </script>
 
 <template>
@@ -38,6 +52,13 @@ const store = useJokesStore()
 
           Fetch Random Jokes
         </Button>
+
+        <JokesDeleteAll
+          :is-open="isDeleteAllDialogOpen"
+          :is-disabled-button="store.jokes.length === 0"
+          @set-is-delete-dialog-open="setIsDeleteAllDialogOpen"
+          @delete-all="onDeleteAll"
+        />
       </div>
     </div>
 
