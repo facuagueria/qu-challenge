@@ -159,6 +159,10 @@ export const useJokesStore = defineStore('jokes', () => {
     setLikeStatus(DEFAULT_VALUES.likeStatus)
   }
 
+  function addJoke(joke: Joke) {
+    jokes.value.unshift(joke)
+  }
+
   return {
     jokes,
     filteredJokes,
@@ -172,6 +176,7 @@ export const useJokesStore = defineStore('jokes', () => {
     category,
     likeStatus,
     DEFAULT_VALUES,
+    addJoke,
     deleteAll,
     handlePageChange,
     getJokes,
