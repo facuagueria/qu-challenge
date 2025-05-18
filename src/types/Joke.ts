@@ -5,5 +5,5 @@ export interface Joke {
   type: JokeType
   setup: string
   punchline: string
-  isLiked?: boolean
+  isLiked: boolean | null
 }
