@@ -9,8 +9,18 @@ defineProps<{
   joke: Joke
 }>()
 
-function handleLike() {}
-function handleDislike() {}
+const emits = defineEmits<{
+  (e: 'like', jokeId: number): void
+  (e: 'dislike', jokeId: number): void
+}>()
+
+function handleLike(jokeId: number) {
+  emits('like', jokeId)
+}
+
+function handleDislike(jokeId: number) {
+  emits('dislike', jokeId)
+}
 </script>
 
 <template>
@@ -41,7 +51,7 @@ function handleDislike() {}
           size="sm"
           :class="{ 'bg-green-600 hover:bg-green-700': joke.isLiked === true }"
           class="hover:cursor-pointer"
-          @click="handleLike"
+          @click="() => handleLike(joke.id)"
         >
           <Icon icon="tabler:thumb-up" class="h-4 w-4" />
         </Button>
@@ -50,7 +60,7 @@ function handleDislike() {}
           size="sm"
           :class="{ 'bg-red-600 hover:bg-red-700': joke.isLiked === false }"
           class="hover:cursor-pointer"
-          @click="handleDislike"
+          @click="() => handleDislike(joke.id)"
         >
           <Icon icon="tabler:thumb-down" class="h-4 w-4" />
         </Button>
