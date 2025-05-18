@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -19,12 +19,19 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useJokesStore } from '@/stores/jokes.ts'
+import { useJokeTypesStore } from '@/stores/jokeTypes.ts'
 
 const store = useJokesStore()
+const jokeTypesStore = useJokeTypesStore()
 
 const searchQuery = ref('')
 const selectedCategory = ref('all')
 const selectedLikeStatus = ref('all')
+
+// Fetch joke types on the component mount
+onMounted(async () => {
+  await jokeTypesStore.getJokeTypes()
+})
 
 watch(searchQuery, (newValue) => {
   store.setSearchQuery(newValue)
@@ -81,17 +88,8 @@ function handleLikeStatusChange(value: string) {
                 <SelectItem value="all">
                   All Categories
                 </SelectItem>
-                <SelectItem value="programming">
-                  Programming
-                </SelectItem>
-                <SelectItem value="dad">
-                  Dad Jokes
-                </SelectItem>
-                <SelectItem value="general">
-                  General
-                </SelectItem>
-                <SelectItem value="knock-knock">
-                  Knock-Knock
+                <SelectItem v-for="type in jokeTypesStore.types" :key="type" :value="type">
+                  {{ type.charAt(0).toUpperCase() + type.slice(1).replace('-', ' ') }}
                 </SelectItem>
               </SelectContent>
             </Select>
