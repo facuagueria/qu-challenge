@@ -2,6 +2,7 @@ import type { Joke } from '@/types/Joke.ts'
 import { useFetch } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { API_URLS } from '@/constants/api'
 
 const DEFAULT_VALUES = {
   isLoading: false,
@@ -11,8 +12,6 @@ const DEFAULT_VALUES = {
   category: 'all',
   likeStatus: 'all',
 }
-
-const URL = 'https://official-joke-api.appspot.com/jokes/random/10'
 
 export const useJokesStore = defineStore('jokes', () => {
   const jokes = ref<Joke[]>([])
@@ -109,7 +108,7 @@ export const useJokesStore = defineStore('jokes', () => {
   async function getJokes() {
     isLoading.value = true
 
-    const { error, data } = await useFetch<Joke[]>(URL)
+    const { error, data } = await useFetch<Joke[]>(API_URLS.RANDOM_JOKES)
       .get()
       .json()
 
