@@ -26,12 +26,12 @@ export const useJokesStore = defineStore('jokes', () => {
   const filteredJokes = computed(() => {
     return jokes.value.filter((joke) => {
       // Filter by search query
-      const matchesSearch = searchQuery.value === ''
+      const matchesSearch = searchQuery.value === DEFAULT_VALUES.searchQuery
         || joke.setup.toLowerCase().includes(searchQuery.value.toLowerCase())
         || joke.punchline.toLowerCase().includes(searchQuery.value.toLowerCase())
 
       // Filter by category
-      const matchesCategory = category.value === 'all' || joke.type === category.value
+      const matchesCategory = category.value === DEFAULT_VALUES.category || joke.type === category.value
 
       // Filter by like status
       let matchesLikeStatus = true
@@ -73,19 +73,19 @@ export const useJokesStore = defineStore('jokes', () => {
   // Set a search query
   function setSearchQuery(query: string) {
     searchQuery.value = query
-    currentPage.value = 1 // Reset to first page when filter changes
+    currentPage.value = DEFAULT_VALUES.currentPage // Reset to first page when filter changes
   }
 
   // Set category filter
   function setCategory(value: string) {
     category.value = value
-    currentPage.value = 1 // Reset to first page when filter changes
+    currentPage.value = DEFAULT_VALUES.currentPage // Reset to first page when filter changes
   }
 
   // Set like status filter
   function setLikeStatus(value: string) {
     likeStatus.value = value
-    currentPage.value = 1 // Reset to first page when filter changes
+    currentPage.value = DEFAULT_VALUES.currentPage // Reset to first page when filter changes
   }
 
   // Like a joke
