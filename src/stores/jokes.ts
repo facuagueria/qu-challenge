@@ -104,6 +104,25 @@ export const useJokesStore = defineStore('jokes', () => {
     }
   }
 
+  // Remove a joke
+  function removeJoke(jokeId: number): boolean {
+    // Handle invalid joke IDs
+    if (jokeId === undefined || jokeId === null || Number.isNaN(jokeId) || jokeId < 0) {
+      console.error(`Invalid joke ID: ${jokeId}`)
+      return false
+    }
+
+    const jokeIndex = jokes.value.findIndex(j => j.id === jokeId)
+    if (jokeIndex !== -1) {
+      jokes.value.splice(jokeIndex, 1)
+      return true
+    }
+    else {
+      console.warn(`Joke with ID ${jokeId} not found`)
+      return false
+    }
+  }
+
   // Get jokes from API
   async function getJokes() {
     isLoading.value = true
@@ -149,5 +168,6 @@ export const useJokesStore = defineStore('jokes', () => {
     setLikeStatus,
     likeJoke,
     dislikeJoke,
+    removeJoke,
   }
 })
