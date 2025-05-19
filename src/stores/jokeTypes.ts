@@ -1,32 +1,30 @@
-import type { JokeType } from '@/types/Joke'
-import { useFetch } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { API_URLS } from '@/constants/api'
+import { computed, ref } from 'vue'
+import { getJokeTypesRepository } from '@/repositories/jokeTypes'
 
 export const useJokeTypesStore = defineStore('joke-types', () => {
-  const types = ref<JokeType[]>([])
+  // Get the repository instance
+  const repository = getJokeTypesRepository()
+
   const isLoading = ref(false)
 
   // Fetch joke types from API
   async function getJokeTypes() {
     isLoading.value = true
 
-    const { error, data } = await useFetch<JokeType[]>(API_URLS.TYPES)
-      .get()
-      .json()
-
-    if (error.value) {
-      isLoading.value = false
-      throw error.value
+    try {
+      await repository.getJokeTypes()
     }
-
-    if (data.value) {
-      types.value = data.value
+    catch (error) {
+      isLoading.value = false
+      throw error
     }
 
     isLoading.value = false
   }
+
+  // Create a computed property for types that uses the repository
+  const types = computed(() => repository.getAllJokeTypes())
 
   return {
     types,
