@@ -21,9 +21,8 @@ export interface JokesRepository {
   /**
    * Remove a joke from the collection
    * @param jokeId - The ID of the joke to remove
-   * @returns boolean - True if the joke was removed, false otherwise
    */
-  removeJoke: (jokeId: number) => boolean
+  removeJoke: (jokeId: number) => void
 
   /**
    * Toggle a joke's like status (true or null)

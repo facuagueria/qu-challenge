@@ -49,23 +49,19 @@ export class JokesRepositoryImpl implements JokesRepository {
   /**
    * Remove a joke from the collection
    * @param jokeId - The ID of the joke to remove
-   * @returns boolean - True if the joke was removed, false otherwise
    */
-  removeJoke(jokeId: number): boolean {
+  removeJoke(jokeId: number): void {
     // Handle invalid joke IDs
     if (jokeId === undefined || jokeId === null || Number.isNaN(jokeId) || jokeId < 0) {
-      console.error(`Invalid joke ID: ${jokeId}`)
-      return false
+      throw new Error(`Invalid joke ID: ${jokeId}`)
     }
 
     const jokeIndex = this.jokes.value.findIndex(j => j.id === jokeId)
     if (jokeIndex !== -1) {
       this.jokes.value.splice(jokeIndex, 1)
-      return true
     }
     else {
-      console.warn(`Joke with ID ${jokeId} not found`)
-      return false
+      throw new Error(`Joke with ID ${jokeId} not found`)
     }
   }
 
