@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { Joke } from '@/types/Joke.ts'
 import { Icon } from '@iconify/vue'
-import { ref } from 'vue'
 import JokeDelete from '@/components/jokes/JokeDelete.vue'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { useDialog } from '@/composables/useDialog'
 import { useJokesStore } from '@/stores/jokes.ts'
 
 defineProps<{
@@ -26,22 +26,12 @@ function handleDislike(jokeId: number) {
 }
 
 const jokesStore = useJokesStore()
-const isDeleteDialogOpen = ref<boolean>(false)
-
-function setIsDeleteDialogOpen(open: boolean) {
-  isDeleteDialogOpen.value = open
-}
+const deleteDialog = useDialog(false)
 
 function onDelete(jokeId: number) {
   // Only close the dialog if the joke was successfully removed
-  const success = jokesStore.removeJoke(jokeId)
-  if (success) {
-    setIsDeleteDialogOpen(false)
-  }
-  else {
-    console.error(`Failed to delete joke with ID: ${jokeId}`)
-    // Keep the dialog open to allow the user to try again or cancel
-  }
+  jokesStore.removeJoke(jokeId)
+  deleteDialog.close()
 }
 </script>
 
@@ -62,8 +52,8 @@ function onDelete(jokeId: number) {
 
         <JokeDelete
           :joke
-          :is-open="isDeleteDialogOpen"
-          @set-is-delete-dialog-open="setIsDeleteDialogOpen"
+          :is-open="deleteDialog.isOpen.value"
+          @set-is-delete-dialog-open="deleteDialog.setIsOpen"
           @delete="onDelete"
         />
       </div>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import { ref } from 'vue'
 import AddJokeDialog from '@/components/jokes/AddJokeDialog.vue'
 import JokeCard from '@/components/jokes/JokeCard.vue'
 import JokesDeleteAll from '@/components/jokes/JokesDeleteAll.vue'
@@ -8,26 +7,18 @@ import JokesFilter from '@/components/jokes/JokesFilter.vue'
 import JokesPagination from '@/components/jokes/JokesPagination.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { useDialog } from '@/composables/useDialog'
 import { useJokesStore } from '@/stores/jokes.ts'
 
 const store = useJokesStore()
 
-const isDeleteAllDialogOpen = ref<boolean>(false)
-
-function setIsDeleteAllDialogOpen(open: boolean) {
-  isDeleteAllDialogOpen.value = open
-}
+// Use composables for dialog state management
+const deleteAllDialog = useDialog(false)
+const addJokeDialog = useDialog(false)
 
 function onDeleteAll() {
   store.deleteAll()
-
-  setIsDeleteAllDialogOpen(false)
-}
-
-const isAddDialogOpen = ref<boolean>(false)
-
-function setIsAddJokeOpen(open: boolean) {
-  isAddDialogOpen.value = open
+  deleteAllDialog.close()
 }
 </script>
 
@@ -44,7 +35,7 @@ function setIsAddJokeOpen(open: boolean) {
       </div>
 
       <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-end self-start">
-        <Button class="hover:cursor-pointer" @click="setIsAddJokeOpen(true)">
+        <Button class="hover:cursor-pointer" @click="addJokeDialog.open()">
           <Icon icon="tabler:plus" height="16" width="16" />
           Add Joke
         </Button>
@@ -61,9 +52,9 @@ function setIsAddJokeOpen(open: boolean) {
         </Button>
 
         <JokesDeleteAll
-          :is-open="isDeleteAllDialogOpen"
+          :is-open="deleteAllDialog.isOpen.value"
           :is-disabled-button="store.jokes.length === 0"
-          @set-is-delete-dialog-open="setIsDeleteAllDialogOpen"
+          @set-is-delete-dialog-open="deleteAllDialog.setIsOpen"
           @delete-all="onDeleteAll"
         />
       </div>
@@ -99,7 +90,7 @@ function setIsAddJokeOpen(open: boolean) {
         Try adjusting your search or filters
       </p>
       <div class="flex flex-wrap gap-2 mt-4">
-        <Button class="hover:cursor-pointer" @click="setIsAddJokeOpen(true)">
+        <Button class="hover:cursor-pointer" @click="addJokeDialog.open()">
           <Icon icon="tabler:plus" height="16" width="16" />
           Add Joke
         </Button>
@@ -126,8 +117,8 @@ function setIsAddJokeOpen(open: boolean) {
   />
 
   <AddJokeDialog
-    :is-open="isAddDialogOpen"
-    @set-is-add-dialog-open="setIsAddJokeOpen"
+    :is-open="addJokeDialog.isOpen.value"
+    @set-is-add-dialog-open="addJokeDialog.setIsOpen"
     @add-joke="store.addJoke"
   />
 </template>

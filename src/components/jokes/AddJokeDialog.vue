@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type { Joke } from '@/types/Joke.ts'
-import { toTypedSchema } from '@vee-validate/zod'
-import { useForm } from 'vee-validate'
-
-import * as z from 'zod'
-
+import { watch } from 'vue'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -31,9 +27,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { useDialog } from '@/composables/useDialog'
+import { useJokeForm } from '@/composables/useJokeForm'
 import { useJokeTypesStore } from '@/stores/jokeTypes.ts'
 
-defineProps<{
+const props = defineProps<{
   isOpen: boolean
 }>()
 
@@ -43,49 +41,28 @@ const emits = defineEmits<{
 }>()
 
 const jokeTypesStore = useJokeTypesStore()
+const { form, createJoke } = useJokeForm()
+const dialog = useDialog(props.isOpen)
 
-const formSchema = toTypedSchema(z.object({
-  setup: z
-    .string()
-    .min(3, {
-      message: 'Setup must be at least 3 characters.',
-    })
-    .max(50, {
-      message: 'Setup must not exceed 50 characters.',
-    }),
-  punchline: z
-    .string()
-    .min(10, {
-      message: 'Punchline text must be at least 10 characters.',
-    })
-    .max(500, {
-      message: 'Punchline text must not exceed 500 characters.',
-    }),
-  category: z.string({
-    required_error: 'Please select a category.',
-  }),
-}))
+// Watch for prop changes to update the dialog state
+watch(() => props.isOpen, (newValue) => {
+  dialog.setIsOpen(newValue)
+})
 
-const form = useForm({
-  validationSchema: formSchema,
+// Watch for dialog state changes to emit events
+watch(() => dialog.isOpen.value, (newValue) => {
+  emits('setIsAddDialogOpen', newValue)
 })
 
 const onSubmit = form.handleSubmit((values) => {
-  const newJoke = {
-    id: Date.now(),
-    type: values.category,
-    setup: values.setup,
-    punchline: values.punchline,
-    isLiked: true,
-  }
-
+  const newJoke = createJoke(values)
   emits('addJoke', newJoke)
-  emits('setIsAddDialogOpen', false)
+  dialog.close()
 })
 </script>
 
 <template>
-  <Dialog :open="isOpen" :on-open-change="() => emits('setIsAddDialogOpen', !isOpen)">
+  <Dialog :open="dialog.isOpen.value" :on-open-change="dialog.toggle">
     <DialogContent class="sm:max-w-[500px]">
       <DialogHeader>
         <DialogTitle>Add a new joke</DialogTitle>
