@@ -101,7 +101,7 @@ export const useJokesStore = defineStore('jokes', () => {
   function deleteAll() {
     repository.deleteAll()
 
-    error('All jokes deleted!')
+    success('All jokes deleted!')
   }
 
   // Get jokes from API
