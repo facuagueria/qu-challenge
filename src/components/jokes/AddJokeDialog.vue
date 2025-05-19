@@ -62,7 +62,11 @@ const onSubmit = form.handleSubmit((values) => {
 </script>
 
 <template>
-  <Dialog :open="dialog.isOpen.value" :on-open-change="dialog.toggle">
+  <Dialog
+    :open="dialog.isOpen.value"
+    :on-open-change="dialog.toggle"
+    @update:open="(openState) => (dialog.isOpen.value = openState)"
+  >
     <DialogContent class="sm:max-w-[500px]">
       <DialogHeader>
         <DialogTitle>Add a new joke</DialogTitle>
