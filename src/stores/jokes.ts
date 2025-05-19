@@ -1,9 +1,8 @@
 import type { Joke } from '@/types/Joke.ts'
-import { useFetch } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { usePagination } from '@/composables/usePagination'
-import { API_URLS } from '@/constants/api'
+import { getJokesRepository } from '@/repositories/jokes'
 
 export const DEFAULT_VALUES = {
   isLoading: false,
@@ -15,7 +14,9 @@ export const DEFAULT_VALUES = {
 }
 
 export const useJokesStore = defineStore('jokes', () => {
-  const jokes = ref<Joke[]>([])
+  // Get the repository instance
+  const repository = getJokesRepository()
+
   const isLoading = ref(DEFAULT_VALUES.isLoading)
   const searchQuery = ref(DEFAULT_VALUES.searchQuery)
   const category = ref(DEFAULT_VALUES.category)
@@ -23,7 +24,7 @@ export const useJokesStore = defineStore('jokes', () => {
 
   // Filter jokes based on a search query, category, and like status
   const filteredJokes = computed(() => {
-    return jokes.value.filter((joke) => {
+    return repository.getAllJokes().filter((joke) => {
       // Filter by search query
       const matchesSearch = searchQuery.value === DEFAULT_VALUES.searchQuery
         || joke.setup.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -74,64 +75,33 @@ export const useJokesStore = defineStore('jokes', () => {
 
   // Like a joke
   function likeJoke(jokeId: number) {
-    const joke = jokes.value.find(j => j.id === jokeId)
-    if (joke) {
-      joke.isLiked = joke.isLiked === true ? null : true
-    }
+    repository.likeJoke(jokeId)
   }
 
   // Dislike a joke
   function dislikeJoke(jokeId: number) {
-    const joke = jokes.value.find(j => j.id === jokeId)
-    if (joke) {
-      joke.isLiked = joke.isLiked === false ? null : false
-    }
+    repository.dislikeJoke(jokeId)
   }
 
   // Remove a joke
   function removeJoke(jokeId: number): boolean {
-    // Handle invalid joke IDs
-    if (jokeId === undefined || jokeId === null || Number.isNaN(jokeId) || jokeId < 0) {
-      console.error(`Invalid joke ID: ${jokeId}`)
-      return false
-    }
-
-    const jokeIndex = jokes.value.findIndex(j => j.id === jokeId)
-    if (jokeIndex !== -1) {
-      jokes.value.splice(jokeIndex, 1)
-      return true
-    }
-    else {
-      console.warn(`Joke with ID ${jokeId} not found`)
-      return false
-    }
+    return repository.removeJoke(jokeId)
   }
 
   function deleteAll() {
-    jokes.value = []
+    repository.deleteAll()
   }
 
   // Get jokes from API
   async function getJokes() {
     isLoading.value = true
 
-    const { error, data } = await useFetch<Joke[]>(API_URLS.RANDOM_JOKES)
-      .get()
-      .json()
-
-    if (error.value) {
-      isLoading.value = false
-
-      throw error.value
+    try {
+      await repository.getJokes()
     }
-
-    if (data.value) {
-      const newData = data.value.map((joke: Joke) => ({
-        ...joke,
-        isLiked: null,
-      }))
-
-      jokes.value.push(...newData)
+    catch (error) {
+      isLoading.value = false
+      throw error
     }
 
     isLoading.value = false
@@ -144,8 +114,11 @@ export const useJokesStore = defineStore('jokes', () => {
   }
 
   function addJoke(joke: Joke) {
-    jokes.value.unshift(joke)
+    repository.addJoke(joke)
   }
+
+  // Create a computed property for jokes that uses the repository
+  const jokes = computed(() => repository.getAllJokes())
 
   return {
     jokes,
