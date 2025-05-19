@@ -2,6 +2,7 @@ import type { Joke } from '@/types/Joke.ts'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { usePagination } from '@/composables/usePagination'
+import { useToast } from '@/composables/useToast'
 import { getJokesRepository } from '@/repositories/jokes'
 
 export const DEFAULT_VALUES = {
@@ -21,6 +22,8 @@ export const useJokesStore = defineStore('jokes', () => {
   const searchQuery = ref(DEFAULT_VALUES.searchQuery)
   const category = ref(DEFAULT_VALUES.category)
   const likeStatus = ref(DEFAULT_VALUES.likeStatus)
+
+  const { success, error } = useToast()
 
   // Filter jokes based on a search query, category, and like status
   const filteredJokes = computed(() => {
@@ -84,12 +87,21 @@ export const useJokesStore = defineStore('jokes', () => {
   }
 
   // Remove a joke
-  function removeJoke(jokeId: number): boolean {
-    return repository.removeJoke(jokeId)
+  function removeJoke(jokeId: number): void {
+    try {
+      repository.removeJoke(jokeId)
+
+      success('Joke deleted!')
+    }
+    catch (e: any) {
+      error(e.message)
+    }
   }
 
   function deleteAll() {
     repository.deleteAll()
+
+    error('All jokes deleted!')
   }
 
   // Get jokes from API
@@ -115,6 +127,8 @@ export const useJokesStore = defineStore('jokes', () => {
 
   function addJoke(joke: Joke) {
     repository.addJoke(joke)
+
+    success('New joke added!')
   }
 
   // Create a computed property for jokes that uses the repository
