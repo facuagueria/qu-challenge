@@ -91,7 +91,10 @@ The application uses Pinia for state management:
 git clone https://github.com/facuagueria/qu-challenge.git
 
 # Navigate to the project directory
-cd jokes-app
+cd qu-challenge
+
+# Copy environment file
+cp .env.example .env
 
 # Install dependencies
 pnpm install
@@ -116,9 +119,6 @@ pnpm preview
 ```bash
 # Run unit tests
 pnpm test:unit
-
-# Run end-to-end tests
-pnpm test:e2e
 ```
 
 ## ❓ Technical Questions
