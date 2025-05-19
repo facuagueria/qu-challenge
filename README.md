@@ -2,6 +2,8 @@
 
 A modern, responsive web application for browsing, filtering, and managing jokes. Built with Vue 3, TypeScript, and Tailwind CSS.
 
+Live Demo: https://qu-challenge-two.vercel.app/
+
 ## 🚀 Project Overview
 
 The Joke App is a feature-rich application that allows users to:
